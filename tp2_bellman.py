@@ -39,7 +39,7 @@ action
 3 UP
 '''
 
-def policy_iteration():
+def policy_iteration(): # ex2.3
     policy=np.random.randint(0, high=4, size=nb_states) #politique aleatoire
     policy_prec=policy.copy()
     table=compute_value_function(policy)
@@ -137,22 +137,20 @@ def reward(s_prime,a,s): #-->reward of going from s to s_prime with action a
 final_policy=policy_iteration()
 
 
+n_episodes=100
 
-
-
-n_episodes=10
-
+score=0
 for i in range(n_episodes):
     env.reset()
     time_step=0
     print("episode: ", i)
     state=0
-    while not env.step(action)[2]:
+    action=int(final_policy[state])
+    state, r, done, info, probs=env.step(action)
+    while not done:
         action=int(final_policy[state])
-        #print("state: ",state, "action: ",action)
-        state=env.step(action)[0]
+        state, r, done, info, probs=env.step(action)
         time_step+=1
-        #print("step: ", time_step)
-        env.render()
-
+        score+=r
+    print(score)
 env.close()
